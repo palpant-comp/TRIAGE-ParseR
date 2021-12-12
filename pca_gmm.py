@@ -314,31 +314,31 @@ if __name__ == '__main__':
 		print ("Using", no_pca, 'PCs from top', no_genes, 'genes with',no_iter,'iterations for model selection')
 
 		### 2. Find gene clusters
-		n_comp = [i+1 for i in range(no_pca)]		
-		print ('Finding gene clusters ...')
-		for label in labels:			
-			genes = get_top_rownames(input_table=disc, col=label, top_no=2000, reverse=True)
-			genes = intersection(genes, rows) 
-			row_idx = find_index_for_array(a=genes,b=rows)[:no_genes]  
-			aa = pca[row_idx,:]
-			bic_ = []
-			for no in range(no_iter):
-				bic_result = []
-				for n in n_comp:
-					gmm = GaussianMixture(n).fit(aa)  
-					bic_result.append(gmm.bic(aa))
-				bic_.append(bic_result.index(np.min(bic_result)) + 1)  # optimal number of pcincipal components 
-			n = most_frequent_element(input_list=bic_)
-			print (label, n)
-			gmm = GaussianMixture(n, random_state=42).fit(aa)
-			bb = gmm.predict_proba(aa)  # Assess top x TRIAGE-prioritised genes
-			results = [['#gene']+['cluster'+str(i+1) for i in range(n)]]
-			for i in range(len(bb)):
-				gene = rows[row_idx[i]]
-				results.append([gene])
-				for j in range(len(bb[i])):
-					results[-1].extend([bb[i][j]])
-			write_file(results, options.output_directory+'/gene_clusters/'+label+'_gene_clusters.txt')
+		# n_comp = [i+1 for i in range(no_pca)]		
+		# print ('Finding gene clusters ...')
+		# for label in labels:			
+		# 	genes = get_top_rownames(input_table=disc, col=label, top_no=2000, reverse=True)
+		# 	genes = intersection(genes, rows) 
+		# 	row_idx = find_index_for_array(a=genes,b=rows)[:no_genes]  
+		# 	aa = pca[row_idx,:]
+		# 	bic_ = []
+		# 	for no in range(no_iter):
+		# 		bic_result = []
+		# 		for n in n_comp:
+		# 			gmm = GaussianMixture(n).fit(aa)  
+		# 			bic_result.append(gmm.bic(aa))
+		# 		bic_.append(bic_result.index(np.min(bic_result)) + 1)  # optimal number of pcincipal components 
+		# 	n = most_frequent_element(input_list=bic_)
+		# 	print (label, n)
+		# 	gmm = GaussianMixture(n, random_state=42).fit(aa)
+		# 	bb = gmm.predict_proba(aa)  # Assess top x TRIAGE-prioritised genes
+		# 	results = [['#gene']+['cluster'+str(i+1) for i in range(n)]]
+		# 	for i in range(len(bb)):
+		# 		gene = rows[row_idx[i]]
+		# 		results.append([gene])
+		# 		for j in range(len(bb[i])):
+		# 			results[-1].extend([bb[i][j]])
+		# 	write_file(results, options.output_directory+'/gene_clusters/'+label+'_gene_clusters.txt')
 
 		# 3. GO ENRICHMENT 
 		if options.go_analysis==1:
@@ -347,11 +347,13 @@ if __name__ == '__main__':
 				os.mkdir(options.output_directory+'/go')
 			files = os.listdir(options.output_directory+'/gene_clusters/')			
 			for i in files:
-
-				a = i.split('_gene_clusters')
-				name = a[0]
-				print (a[0])
-				groups = find_gmm_cluster(input_list=options.output_directory+'/gene_clusters/'+name+'_gene_clusters.txt')
-				results = create_sig_go_gmm_table(groups=groups, ppi_threshold=0.001, top_no=10)			
-				write_table(results, options.output_directory+'/go/'+name+'_go.txt')
+				try:
+					a = i.split('_gene_clusters')
+					name = a[0]
+					print (a[0])
+					groups = find_gmm_cluster(input_list=options.output_directory+'/gene_clusters/'+name+'_gene_clusters.txt')
+					results = create_sig_go_gmm_table(groups=groups, ppi_threshold=0.001, top_no=10)			
+					write_table(results, options.output_directory+'/go/'+name+'_go.txt')
+				except:
+					continue
 
