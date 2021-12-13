@@ -327,7 +327,7 @@ if __name__ == '__main__':
 				for n in n_comp:
 					gmm = GaussianMixture(n).fit(aa)  
 					bic_result.append(gmm.bic(aa))
-				bic_.append(bic_result.index(np.min(bic_result)) + 1)  # optimal number of pcincipal components 
+				bic_.append(bic_result.index(np.min(bic_result)) + 1)  # optimal number of gene clusters 
 			n = most_frequent_element(input_list=bic_)
 			print (label, n)
 			gmm = GaussianMixture(n, random_state=42).fit(aa)
