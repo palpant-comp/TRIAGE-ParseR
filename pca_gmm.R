@@ -28,6 +28,17 @@ dev.off()
 
 ### PCA GMM GO SIGNIFICANT HEATMAP
 library(viridis)
+
+idx_for_top_values = function(matrix, no_terms, col_order){
+idx = vector()
+for (col in col_order){
+temp = order(matrix[,col], decreasing=T)[1:no_terms]
+idx = c(idx, temp)
+}
+idx = unique(idx)
+return(idx)
+}
+
 groups = c('37','11','20','21','25','26','38','42','55','62','64')
 for (group in groups){
   table_ = read.table(paste0('/Users/woojunshim/Research/sc_clustering_paper/data/go/',group,'_go.txt'), stringsAsFactors = F)
