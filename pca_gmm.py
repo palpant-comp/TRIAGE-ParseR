@@ -24,6 +24,7 @@ def read_file_items(filename, col=0, numeric=False):
 
 def read_table(input_file, numeric=True, as_list=False, include_sum=False, threshold_=None, del_colnames=True):
     ### reads in a table file and returns a dictionary
+    ### The input table is tab delimited
     ### Note. the number of colnames must be always n-1 where n is the total number of columns (including rownames)
     ### numerical = a boolean to indicate whether the data should be read as numbers (True) or string (False)
     ### as_list = a boolean to indicate whether the data is to be stored in the form of dictionary of lists, rather than dictionary of dictionaries
