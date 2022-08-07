@@ -1,5 +1,5 @@
-### PCA-GMM FOR TRIAGE GENE CLUSTERING ###
-### DEVELOPED AND WRITTEN BY WOO JUN SHIM ###
+### TRIAGE GENE CLUSTERING ###
+### Developed and written by Woo Jun (Chris) Shim
 
 import numpy as np
 import os, sys, scipy.stats, collections, requests
@@ -24,7 +24,6 @@ def read_file_items(filename, col=0, numeric=False):
 
 def read_table(input_file, numeric=True, as_list=False, include_sum=False, threshold_=None, del_colnames=True):
     ### reads in a table file and returns a dictionary
-    ### The input table is tab delimited
     ### Note. the number of colnames must be always n-1 where n is the total number of columns (including rownames)
     ### numerical = a boolean to indicate whether the data should be read as numbers (True) or string (False)
     ### as_list = a boolean to indicate whether the data is to be stored in the form of dictionary of lists, rather than dictionary of dictionaries
@@ -281,18 +280,19 @@ if __name__ == '__main__':
 
     ### Command line options   
 	parser = OptionParser()
-	parser.add_option('-i', '--i', dest='discordance_table', help='input discordance table')    
+	parser.add_option('-i', '--i', dest='input', help='input')    
 	parser.add_option('-r', '--r', dest='H3K27me3_pc', help='pre-calculated H3K27me3 principal components', default='./data/pca_x')
 	parser.add_option('-p', '--p', dest='no_pca', help='Number of PCs to use', default=67, type=int)
 	parser.add_option('-g', '--g', dest='no_genes', help='Number of top genes to use', default=100, type=int)
 	parser.add_option('-t', '--t', dest='no_iter', help='Number of iterations for model selection', default=10, type=int)
 	parser.add_option('-o', '--o', dest='output_directory', help='Output directory', default='./results/')
 	parser.add_option('-e', '--e', dest='go_analysis', help='Whether to perform GO enrichment analysis (1: Yes, default, 0: No', default=1, type=int)
+	parser.add_option('-a', '--a', dest='input_type', help='Input type (option: table or list)', default='list')
 
 	options = parser.parse_args()[0]  
 
-	if options.discordance_table == None:
-		sys.exit('Exiting: input discordance table is required (-i)')
+	if options.input == None:
+		sys.exit('Exiting: input (TRIAGE output table or a list of genes) is required (-i)')
 	else:
 		if not os.path.exists(options.output_directory):
 			os.mkdir(options.output_directory)
@@ -306,9 +306,12 @@ if __name__ == '__main__':
 		pca = np.loadtxt(options.H3K27me3_pc+'.csv',delimiter=',', dtype=float)
 		cols = read_file_items(options.H3K27me3_pc+'_cols.txt')
 		rows = read_file_items(options.H3K27me3_pc+'_rows.txt')
-		disc = read_table(options.discordance_table)
+		if options.input_type=='table':
+			disc = read_table(options.input)
+			labels = get_colnames(disc)
+		else:
+			labels = ['output']
 		col_idx = find_index_for_array(a=['PC'+str(i+1) for i in range(no_pca)],b=cols)
-		labels = get_colnames(disc)
 		results = initiate_table(rows=['PC'+str(i+1) for i in range(no_pca)], cols=labels, default=1)
 		total_rows = len(rows)
 		print ("H3K27me3 PCA table =",pca.shape)
@@ -317,8 +320,11 @@ if __name__ == '__main__':
 		### 2. Find gene clusters
 		n_comp = [i+1 for i in range(no_pca)]		
 		print ('Finding gene clusters ...')
-		for label in labels:			
-			genes = get_top_rownames(input_table=disc, col=label, top_no=2000, reverse=True)
+		for label in labels:
+			if options.input_type=='table':	
+				genes = get_top_rownames(input_table=disc, col=label, top_no=2000, reverse=True)
+			else:
+				genes = read_file_items(options.input)
 			genes = intersection(genes, rows) 
 			row_idx = find_index_for_array(a=genes,b=rows)[:no_genes]  
 			aa = pca[row_idx,:]
@@ -328,7 +334,7 @@ if __name__ == '__main__':
 				for n in n_comp:
 					gmm = GaussianMixture(n).fit(aa)  
 					bic_result.append(gmm.bic(aa))
-				bic_.append(bic_result.index(np.min(bic_result)) + 1)  # optimal number of gene clusters 
+				bic_.append(bic_result.index(np.min(bic_result)) + 1)  # optimal number of pcincipal components 
 			n = most_frequent_element(input_list=bic_)
 			print (label, n)
 			gmm = GaussianMixture(n, random_state=42).fit(aa)
