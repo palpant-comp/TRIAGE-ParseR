@@ -126,20 +126,6 @@ def api_string(genes, method='ppi_enrichment', output_format="json", species=960
 				results.append([term, preferred_names, str(fdr), description])    
 	return results
 
-def write_file(data, filename):	
-	temp = open(filename, 'w')
-	line = '#gene'
-	for item in data.columns:
-		line += '\t'+str(item)
-	temp.write(line+'\n')
-	genes = data.index
-	for i in range(data.shape[0]):
-		line = genes[i]
-		for j in range(data.shape[1]):
-			line += '\t'+str(data.iloc[i,j])
-		temp.write(line+'\n')
-	temp.close
-
 def calculate_variance(input):
 	return [np.var(input.iloc[:,i]) for i in range(input.shape[1])]
 
@@ -233,6 +219,5 @@ if __name__ == '__main__':
 				if options.verbose==1:
 					print (a[0])
 				groups = find_gmm_cluster(input_list=options.output_directory+'/gene_clusters/'+name+'_gene_clusters.txt')
-				print (groups)
 				results = create_sig_go_gmm_table(groups=groups, ppi_threshold=0.01, enrichment_threshold=0.01)
 				write_table(results, options.output_directory+'/go/'+name+'_go.txt')
