@@ -1,7 +1,7 @@
 # pca_gmm
 TRIAGE gene clustering by Principal component analysis - Gaussian Mixture model (PCA-GMM)
 
-> python3 pca_gmm_revised.py -i YOUR_INPUT_TEXT_FILE -o OUTPUT_DIRECTORY 
+> python3 TRIAGE_parser.py -i YOUR_INPUT_TEXT_FILE -o OUTPUT_DIRECTORY 
 
 options
 
@@ -21,6 +21,8 @@ options
 
 -v, verbose level (option: 1 or 0, default = 1)
 
--w. max. number of clusters allowed (default=10)
+-w, max. number of clusters allowed (default=10)
+
+-j, gene order, gene sort direction by value (option: ascending or descending, default = descending)
 
 For example of the input type, see included example text files. 
