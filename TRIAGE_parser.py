@@ -154,7 +154,7 @@ if __name__ == '__main__':
 	parser.add_option('-r', '--r', dest='H3K27me3_pc', help='pre-calculated H3K27me3 principal components', default='./data/pca_roadmap')
 	parser.add_option('-p', '--p', dest='no_pca', help='Number of PCs to use', default=10, type=int)
 	parser.add_option('-g', '--g', dest='no_genes', help='Number of top genes to use', default=100, type=int)
-	parser.add_option('-t', '--t', dest='no_iter', help='Number of iterations for model selection', default=10, type=int)
+	parser.add_option('-t', '--t', dest='no_iter', help='Number of iterations for model selection', default=100, type=int)
 	parser.add_option('-o', '--o', dest='output_directory', help='Output directory', default='./results/')
 	parser.add_option('-e', '--e', dest='go_analysis', help='Whether to perform GO enrichment analysis (1: Yes, default, 0: No', default=1, type=int)
 	parser.add_option('-a', '--a', dest='input_type', help='Input type (option: table or list)', default='list')
