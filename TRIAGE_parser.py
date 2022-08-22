@@ -227,7 +227,7 @@ if __name__ == '__main__':
 
 			for i in range(len(genes)):
 				results.loc[genes[i]] = list(bb.iloc[i])
-			results.to_csv(options.output_directory+'/gene_clusters/'+label+'_gene_clusters.txt', index_label='GENE')
+			results.to_csv(options.output_directory+'/gene_clusters/'+label+'_gene_clusters.csv', index_label='GENE')
 
 		### 3. GO ENRICHMENT 
 		if options.go_analysis==1:
@@ -241,7 +241,7 @@ if __name__ == '__main__':
 				name = a[0]
 				if options.verbose==1:
 					print (a[0])
-				groups = find_gmm_cluster(input_list=options.output_directory+'/gene_clusters/'+name+'_gene_clusters.txt')
+				groups = find_gmm_cluster(input_list=options.output_directory+'/gene_clusters/'+name+'_gene_clusters.csv')
 				#print (groups)
 				results = create_sig_go_gmm_table(groups=groups, ppi_threshold=0.01, enrichment_threshold=0.01)
 				write_table(results, options.output_directory+'/go/'+name+'_go.txt')
