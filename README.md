@@ -28,3 +28,5 @@ options
 For example of the input type, see included example text files. 
 
 If you have any questions, please contact Woo Jun (Chris) Shim, w.shim@uq.edu.au 
+
+For the citation, please check our paper in BioRxiv https://doi.org/10.1101/2022.10.12.512003 
