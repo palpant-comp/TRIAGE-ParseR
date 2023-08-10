@@ -29,46 +29,47 @@ def read_file_items(filename, col=0, numeric=False):
 	return results
 
 def intersection(data1, data2):
-    # takes a pair of lists and returns a list of shared items
-    # data1 or data2 = a list of elements
-    a = collections.Counter(data1)
-    b = collections.Counter(data2)
-    return list((a & b).elements())
+	# takes a pair of lists and returns a list of shared items
+	# data1 or data2 = a list of elements
+	a = collections.Counter(data1)
+	b = collections.Counter(data2)
+	return list((a & b).elements())
 
 def most_frequent_element(input_list): 
 	# find an element in the list with the highest count
-    counter = 0
-    num = input_list[0]      
-    for i in set(input_list): 
-        curr_frequency = input_list.count(i) 
-        if curr_frequency > counter: 
-            counter = curr_frequency 
-            num = i   
-    return num
+	counter = 0
+	num = input_list[0]      
+	for i in set(input_list): 
+		curr_frequency = input_list.count(i) 
+		if curr_frequency > counter: 
+			counter = curr_frequency 
+			num = i   
+	return num
 
 def write_table(input_data, output_file, numeric=False):
-    # exports a table text file 
-    # takes a dictionary of dictionaries (e.g. input_data[row1][col1]=xx, input_data[row1][col2]=xx, ..)    
-    output_ = open(output_file, 'w')
-    rownames = []
-    for row in input_data:
-        colnames = input_data[row].keys()
-        rownames.append(row)
-    if numeric==False:
-        colnames = [col for col in colnames]
-    else:
-        colnames = [int(col) for col in colnames]
-    colnames.sort()
-    rownames.sort()
-    first_line = ''
-    for col in colnames:
-        first_line += '\t'+str(col)
-    output_.write(first_line+'\n')
-    for row in rownames:
-        line = str(row)
-        for col in colnames:
-            line += '\t'+str(input_data[row][str(col)])
-        output_.write(line+'\n')
+	# exports a table text file 
+	# takes a dictionary of dictionaries (e.g. input_data[row1][col1]=xx, input_data[row1][col2]=xx, ..)
+	if len(input_data)!=0:    
+		output_ = open(output_file, 'w')
+		rownames = []
+		for row in input_data:
+			colnames = input_data[row].keys()
+			rownames.append(row)
+		if numeric==False:
+			colnames = [col for col in colnames]
+		else:
+			colnames = [int(col) for col in colnames]
+		colnames.sort()
+		rownames.sort()
+		first_line = ''
+		for col in colnames:
+			first_line += '\t'+str(col)
+		output_.write(first_line+'\n')
+		for row in rownames:
+			line = str(row)
+			for col in colnames:
+				line += '\t'+str(input_data[row][str(col)])
+			output_.write(line+'\n')
 
 def find_gmm_cluster(input_list):
 	temp = pd.read_csv(input_list, index_col='GENE')
@@ -125,7 +126,7 @@ def api_string(genes, method='ppi_enrichment', output_format="json", species=960
 			fdr = float(row["fdr"])
 			description = row["description"]
 			category = row["category"]
-			if category == "Process" and fdr < 0.01:
+			if category == "Process" and fdr < enrichment_threshold:
 				results.append([term, preferred_names, str(fdr), description])    
 	return results
 
@@ -148,7 +149,7 @@ def calculate_variance(input):
 
 
 if __name__ == '__main__':
-    ### Command line options   
+	### Command line options   
 	parser = OptionParser()
 	parser.add_option('-i', '--i', dest='input', help='input')    
 	parser.add_option('-r', '--r', dest='H3K27me3_pc', help='pre-calculated H3K27me3 principal components', default='./data/pca_roadmap')
@@ -161,7 +162,7 @@ if __name__ == '__main__':
 	parser.add_option('-v', '--v', dest='verbose', help='Level of verbose (option: 1 or 0', default=1)
 	parser.add_option('-w', '--w', dest='max_cluster', help='Max. number of clusters', default=10)
 	parser.add_option('-j', '--j', dest='gene_order', help='Gene sort direction (option: ascending or descending)', default='descending')
-
+	parser.add_option('-q', '--q', dest='enrichment_threshold', help='GO term enrichment threshold', default=0.01)
 	options = parser.parse_args()[0]  
 
 	if options.input == None:
@@ -243,5 +244,6 @@ if __name__ == '__main__':
 					print (a[0])
 				groups = find_gmm_cluster(input_list=options.output_directory+'/gene_clusters/'+name+'_gene_clusters.csv')
 				#print (groups)
-				results = create_sig_go_gmm_table(groups=groups, ppi_threshold=0.01, enrichment_threshold=0.01)
+				results = create_sig_go_gmm_table(groups=groups, ppi_threshold=0.01, enrichment_threshold=options.enrichment_threshold)
+				#print (results)
 				write_table(results, options.output_directory+'/go/'+name+'_go.txt')
