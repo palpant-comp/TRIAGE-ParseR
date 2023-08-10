@@ -13,6 +13,8 @@ options
 
 -g, Number of top genes to use (Default = 100, applicable only if the input is a table)
 
+-t, Number of iterations for model selection (Default = 100)
+
 -o, Output directory (Default = ./results)
 
 -e, Whether to perform GO enrichment analysis (1: Yes, default, 0: No)
