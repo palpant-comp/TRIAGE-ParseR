@@ -27,6 +27,8 @@ options
 
 -j, gene order, gene sort direction by value (option: ascending or descending, default = descending)
 
+-q, GO term enrichment threshold p-value, default=0.01
+
 For example of the input type, see included example text files. 
 
 If you have any questions, please contact Woo Jun (Chris) Shim, w.shim@uq.edu.au 
