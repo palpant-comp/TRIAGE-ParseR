@@ -176,10 +176,10 @@ if __name__ == '__main__':
 		### 1. Load data
 		pca = pd.read_csv(options.H3K27me3_pc+'.csv', index_col='GENE')
 		rows = pca.index
-		cols = pca.head()
+		cols = pca.columns
 		if options.input_type=='table':
 			disc = pd.read_csv(options.input, index_col='GENE', sep='\t')
-			labels = disc.head()
+			labels = disc.columns
 		else:
 			labels = ['output']
 		if options.input_type=='list':
