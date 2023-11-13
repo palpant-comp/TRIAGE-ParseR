@@ -1,6 +1,6 @@
 # TRIAGE-ParseR
 
-![GitHub release (by tag)](https://img.shields.io/github/downloads/palpant-comp/TRIAGE-ParseR/v1/total)
+![GitHub all releases](https://img.shields.io/github/downloads/palpant-comp/TRIAGE-ParseR/total)
 
 TRIAGE gene clustering by Principal component analysis - Gaussian Mixture model (PCA-GMM)
 
