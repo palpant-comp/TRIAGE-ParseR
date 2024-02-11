@@ -1,7 +1,5 @@
 # TRIAGE-ParseR
 
-![GitHub all releases](https://img.shields.io/github/downloads/palpant-comp/TRIAGE-ParseR/total)
-
 TRIAGE gene clustering by Principal component analysis - Gaussian Mixture model (PCA-GMM)
 
 > python3 TRIAGE_parser.py -i YOUR_INPUT_TEXT_FILE -o OUTPUT_DIRECTORY 
