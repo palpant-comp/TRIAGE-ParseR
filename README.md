@@ -35,3 +35,5 @@ For example of the input type, see included example text files.
 If you have any questions, please contact Woo Jun (Chris) Shim, w.shim@uq.edu.au 
 
 For the citation, please check our paper published in NAR https://doi.org/10.1093/nar/gkad307
+
+See also https://github.com/palpant-comp/TRIAGE_R_Package for the R package version of this method.
